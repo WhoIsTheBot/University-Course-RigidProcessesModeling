@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 
 def f_x(t, x, y):
     return t / y
@@ -45,8 +46,27 @@ def solve_differential_equations(t_start, t_end, x_0, y_0, h, epsilon):
     t_values = [t_start]
     x_values = [x_0]
     y_values = [y_0]
-
-    # Use Runge-Kutta 3 to calculate initial steps
+    
+    x_1 = x_0 + h*f_x(t_start,x_0,y_0)
+    y_1 = y_0 + h*f_y(t_start,x_0,y_0)
+    
+    while  True:
+        x_11 = x_0 + (h/2)*f_x(t_start,x_0,y_0)
+        y_11 = y_0 + (h/2)*f_y(t_start,x_0,y_0)
+    
+        x_12 = x_11 + (h/2)*f_x(t_start+(h/2),x_11,y_11)
+        y_12 = y_11 + (h/2)*f_y(t_start+(h/2),x_11,y_11)
+    
+        if (abs(x_1 - x_12) + abs(y_1 -y_12) < epsilon):
+            break
+    
+        h = (h/2)
+        x_1 = x_11
+        y_1 = y_11
+        
+    print(h)
+    
+     #Use Runge-Kutta 3 to calculate initial steps
     for _ in range(3):
         x_next, y_next = runge_kutta_3(t_values[-1], x_values[-1], y_values[-1], h)
         t_values.append(t_values[-1] + h)
@@ -71,13 +91,34 @@ t_start = 0
 t_end = 1
 x_0 = 1
 y_0 = 1
-h = 0.1
+h = 0.3
 epsilon = 0.01
 
 t_values, x_values, y_values = solve_differential_equations(t_start, t_end, x_0, y_0, h, epsilon)
+#Графік
+x_points = []
+y_points = []
 
-# Print the results
+x_points_test = []
+y_points_test = []
+
+# Друк результатів
+print("")
+print("RESULT:")
 for t, x, y in zip(t_values, x_values, y_values):
+    if t > 1:
+        break
     exact_x = math.exp((t**2)/2)
     exact_y = math.exp(-((t**2)/2))
-    print(f"t = {t:.4f}, x = {x:.4f}, exact x = {exact_x:.4f}, y = {y:.4f}, exact y = {exact_y:.4f}")
+    
+    x_points.append(x)
+    y_points.append(y)
+    
+    x_points_test.append(exact_x)
+    y_points_test.append(exact_y)
+    
+    print(f"t = {t:.4f}, x = {x:.4f}, y = {y:.4f},  exact_x = {abs(x - exact_x):.4f}, exact_y = {abs(y - exact_y):.4f}")
+
+plt.plot(x_points, y_points, color="red")
+plt.plot(x_points_test, y_points_test, color="blue")
+plt.show()
