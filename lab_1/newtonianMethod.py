@@ -35,7 +35,7 @@ def newton_method(t, x_n, y_n, h, epsilon, max_iterations=10):
         x -= dx
         y -= dy
 
-        if abs(dx) < epsilon and abs(dy) < epsilon:
+        if (abs(dx) + abs(dy)) < epsilon:
             return x, y
 
     raise ValueError("Метод Ньютона не сходиться за вказане число ітерацій.")
@@ -114,7 +114,7 @@ def solve_differential_equations(t_start, t_end, x_0, y_0, h, epsilon):
         y_values.append(y_next)
 
         # Перевірка на збіжність
-        if abs(x_next - x_values[-2]) < epsilon and abs(y_next - y_values[-2]) < epsilon:
+        if (abs(x_next - x_values[-2]) + abs(y_next - y_values[-2]) )< epsilon:
             break
 
     return t_values, x_values, y_values
@@ -124,8 +124,8 @@ t_start = 0
 t_end = 1
 x_0 = 1
 y_0 = 1
-h = 0.3
-epsilon = 0.01
+h = 0.2
+epsilon = 0.00000001
 
 t_values, x_values, y_values = solve_differential_equations(t_start, t_end, x_0, y_0, h, epsilon)
 #Графік
@@ -150,7 +150,7 @@ for t, x, y in zip(t_values, x_values, y_values):
     x_points_test.append(exact_x)
     y_points_test.append(exact_y)
     
-    print(f"t = {t:.4f}, x = {x:.4f}, y = {y:.4f},  exact_x = {abs(x - exact_x):.4f}, exact_y = {abs(y - exact_y):.4f}")
+    print(f"t = {t:.6f}, x = {x:.6f}, y = {y:.6f},  exact_x = {abs(x - exact_x):.6f}, exact_y = {abs(y - exact_y):.6f}")
 
 plt.plot(x_points, y_points, color="red")
 plt.plot(x_points_test, y_points_test, color="blue")
